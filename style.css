@@ -1,11 +1,16 @@
-body, html {
+.responsive-image {
+    width: 100%; /* Make the image width 100% of the container */
+    height: auto; /* Keep the aspect ratio of the image */
+}
+
+/* body, html {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f0f8ff;
     color: #333;
     text-align: center;
-    overflow-x: hidden; /* Prevent horizontal scrollbars */
+    overflow-x: hidden;
 }
 
 header {
@@ -55,3 +60,4 @@ footer {
     width: 100%;
     bottom: 0;
 }
+ */
