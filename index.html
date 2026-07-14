@@ -12,20 +12,18 @@
 </head>
 <body>
 
-    <!-- ========== Chapter 1: The Arrival (pinned hero) ========== -->
-    <section class="scene scene-hero" id="arrival">
-        <div class="scene-bg" data-hero-bg>
-            <img src="assets/davisbithia_dragon.jpg" alt="A golden dragon soars over an ivy-covered stone bridge in the valley of Davisbithia">
-        </div>
-        <div class="mist mist-1" aria-hidden="true"></div>
-        <div class="mist mist-2" aria-hidden="true"></div>
-        <canvas class="fireflies" aria-hidden="true"></canvas>
+    <!-- ========== Chapter 1: The Flight (scroll-scrubbed frame sequence) ========== -->
+    <section class="scene scene-flight" id="arrival">
+        <img class="flight-fallback" src="assets/frames/f-001.webp"
+             alt="A golden dragon soars over an ivy-covered stone bridge in the valley of Davisbithia">
+        <canvas class="flight-canvas" aria-hidden="true"></canvas>
         <div class="hero-copy">
             <p class="hero-kicker">Welcome to</p>
             <h1 class="hero-title">Davisbithia</h1>
             <p class="hero-tagline">A land of enchantment and wonder.</p>
         </div>
-        <p class="scroll-hint" aria-hidden="true">Scroll to begin the journey<span class="chevron"></span></p>
+        <p class="flight-caption" aria-hidden="true">Ride the wind into the valley&hellip;</p>
+        <p class="scroll-hint" aria-hidden="true">Scroll to take flight<span class="chevron"></span></p>
     </section>
 
     <!-- ========== Chapter 2: Crossing (text interlude) ========== -->

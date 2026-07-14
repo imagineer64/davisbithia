@@ -1,0 +1,38 @@
+# One-shot helper: downloads the generated flight video and extracts the
+# scroll-scrub frame sequence. Triggered manually; safe to delete afterwards.
+name: Fetch flight frames
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_url:
+        description: URL of the rendered flight video
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  frames:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download video and extract WebP frames
+        run: |
+          curl -sSL -o /tmp/flight.mp4 "${{ inputs.video_url }}"
+          ffprobe -v error -show_entries format=duration -of csv=p=0 /tmp/flight.mp4
+          mkdir -p assets/frames
+          ffmpeg -hide_banner -loglevel error -i /tmp/flight.mp4 \
+            -vf "fps=12,scale=1280:720:flags=lanczos" \
+            -c:v libwebp -quality 72 assets/frames/f-%03d.webp
+          ls assets/frames | wc -l
+          du -sh assets/frames
+
+      - name: Commit frames
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/frames
+          git commit -m "Add pre-rendered flight frame sequence"
+          git push
