@@ -3,28 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to DavisBithia</title>
+    <title>Davisbithia — A Land of Enchantment &amp; Wonder</title>
+    <meta name="description" content="Welcome to Davisbithia, a land of enchantment and wonder. Explore a magical world of creativity, learning, and innovation.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Source+Sans+3:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1></h1>
+
+    <!-- Hero -->
+    <header class="hero">
+        <div class="hero-overlay">
+            <p class="hero-kicker">Welcome to</p>
+            <h1 class="hero-title">Davisbithia</h1>
+            <p class="hero-tagline">A land of enchantment and wonder — where creativity, learning, and innovation take flight.</p>
+            <a class="hero-cta" href="#explore">Begin the Journey</a>
+        </div>
+        <a class="hero-scroll" href="#explore" aria-label="Scroll down to explore">
+            <span class="chevron"></span>
+        </a>
     </header>
+
     <main>
-        <img src="assets/davisbithia-header.png" alt="DavisBithia Landscape">
-        <section class="description">
-            <p>Welcome to Davisbithia, a land of enchantment and wonder. Explore our magical world and unlock the secrets of creativity, learning, and innovation.</p>
+        <!-- Intro -->
+        <section class="intro" id="explore">
+            <h2>Cross the Bridge</h2>
+            <p>
+                Every great journey begins with a single step onto the bridge. Davisbithia is a
+                growing collection of ideas and experiments — a place to explore how we think,
+                how we learn, and how new tools can help us do both better.
+            </p>
         </section>
-        <!-- <section class="topics">
-            <h2>Explore Our Topics</h2>
-            <ul>
-                <li><a href="#second-brain">Creating a Second Brain</a></li>
-                <li><a href="#private-llms">Learning to Use Private LLMs for AI</a></li>
-            </ul>
-        </section> -->
+
+        <!-- Topics -->
+        <section class="topics">
+            <h2>Explore the Realms</h2>
+            <div class="card-grid">
+                <article class="card">
+                    <div class="card-icon" aria-hidden="true">🧠</div>
+                    <h3>Creating a Second Brain</h3>
+                    <p>
+                        Build a trusted system outside your head for capturing, organizing, and
+                        connecting everything you learn — so no idea is ever lost to the mists.
+                    </p>
+                    <span class="card-badge">Coming soon</span>
+                </article>
+                <article class="card">
+                    <div class="card-icon" aria-hidden="true">🐉</div>
+                    <h3>Private LLMs for AI</h3>
+                    <p>
+                        Tame your own dragon. Learn to run large language models privately, on
+                        your own terms — keeping your data close while unlocking real power.
+                    </p>
+                    <span class="card-badge">Coming soon</span>
+                </article>
+            </div>
+        </section>
     </main>
+
     <footer>
-        <p>&copy; 2024 DavisBithia. All rights reserved.</p>
+        <p>&copy; 2026 Davisbithia. All rights reserved.</p>
     </footer>
+
 </body>
 </html>
