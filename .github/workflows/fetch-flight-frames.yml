@@ -30,6 +30,10 @@ jobs:
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Install ffmpeg
+        if: steps.check.outputs.skip == 'false'
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
       - name: Download video and extract WebP frames
         if: steps.check.outputs.skip == 'false'
         run: |
