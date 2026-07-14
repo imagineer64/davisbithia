@@ -1,6 +1,7 @@
 /* Davisbithia scrollytelling — GSAP ScrollTrigger drives every effect.
-   All animation is scroll-scrubbed; with prefers-reduced-motion the page
-   is fully readable with no JS effects at all. */
+   Chapter 1 is a pre-rendered flight: scroll scrubs through a WebP frame
+   sequence drawn to a canvas (the same technique Apple product pages use).
+   With prefers-reduced-motion the page is fully readable with no effects. */
 
 (function () {
     'use strict';
@@ -10,32 +11,84 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    /* ===== Chapter 1: hero — pinned camera descent =====
-       The scene pins for an extra viewport of scrolling while the
-       artwork zooms out from 1.35x to 1x and drifts upward, reading
-       as a camera descending into the valley. The title sinks and
-       fades as the scene releases. */
+    /* ===== Chapter 1: The Flight — scroll-scrubbed frame sequence =====
+       The scene pins for five extra viewports while scroll position picks
+       which frame of the pre-rendered dragon flight to draw. */
+
+    var FRAME_COUNT = 181;
+    var FRAME_PATH = function (i) {
+        return 'assets/frames/f-' + String(i + 1).padStart(3, '0') + '.webp';
+    };
+
+    var canvas = document.querySelector('.flight-canvas');
+    var ctx = canvas.getContext('2d');
+    var frames = new Array(FRAME_COUNT);
+    var loaded = new Array(FRAME_COUNT).fill(false);
+    var current = { i: 0 };
+    var drawnIndex = -1;
+
+    function drawCover(img) {
+        var cw = canvas.width, ch = canvas.height;
+        var s = Math.max(cw / img.naturalWidth, ch / img.naturalHeight);
+        var w = img.naturalWidth * s, h = img.naturalHeight * s;
+        ctx.clearRect(0, 0, cw, ch);
+        ctx.drawImage(img, (cw - w) / 2, (ch - h) / 2, w, h);
+    }
+
+    /* Draw the requested frame, or the nearest already-loaded one below it
+       so fast scrolling never shows a blank canvas mid-download. */
+    function render() {
+        var want = Math.round(current.i);
+        var use = want;
+        while (use > 0 && !loaded[use]) use--;
+        if (!loaded[use]) return;
+        if (use === drawnIndex) return;
+        drawnIndex = use;
+        drawCover(frames[use]);
+    }
+
+    function resize() {
+        canvas.width = canvas.offsetWidth * Math.min(devicePixelRatio, 2);
+        canvas.height = canvas.offsetHeight * Math.min(devicePixelRatio, 2);
+        drawnIndex = -1;
+        render();
+    }
+    window.addEventListener('resize', resize);
+
+    /* Load pass 1: every 12th frame (fast coarse coverage), pass 2: rest. */
+    function loadFrame(i, cb) {
+        var img = new Image();
+        img.onload = function () { loaded[i] = true; frames[i] = img; if (cb) cb(); render(); };
+        img.src = FRAME_PATH(i);
+        frames[i] = img;
+    }
+    loadFrame(0, resize);
+    var order = [];
+    for (var i = 1; i < FRAME_COUNT; i += 12) order.push(i);
+    for (var j = 1; j < FRAME_COUNT; j++) if ((j - 1) % 12 !== 0) order.push(j);
+    var cursor = 0, CONCURRENCY = 6;
+    function pump() {
+        if (cursor >= order.length) return;
+        loadFrame(order[cursor++], pump);
+    }
+    for (var k = 0; k < CONCURRENCY; k++) pump();
 
     gsap.timeline({
         scrollTrigger: {
-            trigger: '.scene-hero',
+            trigger: '.scene-flight',
             start: 'top top',
-            end: '+=120%',
-            scrub: 0.6,
+            end: '+=500%',
+            scrub: 0.4,
             pin: true
         }
     })
-    .fromTo('[data-hero-bg]',
-        { scale: 1.35, yPercent: -6 },
-        { scale: 1, yPercent: 0, ease: 'none' }, 0)
-    .fromTo('.hero-copy',
-        { yPercent: 0, opacity: 1 },
-        { yPercent: 35, opacity: 0, ease: 'power1.in' }, 0.25)
-    .to('.scroll-hint', { opacity: 0, duration: 0.15 }, 0)
-    .fromTo('.mist-1',
-        { xPercent: -8 }, { xPercent: 8, ease: 'none' }, 0)
-    .fromTo('.mist-2',
-        { xPercent: 6 }, { xPercent: -6, ease: 'none' }, 0);
+    .to(current, { i: FRAME_COUNT - 1, ease: 'none', duration: 10, onUpdate: render }, 0)
+    .to('.hero-copy', { yPercent: 30, opacity: 0, ease: 'power1.in', duration: 1.6 }, 0.4)
+    .to('.scroll-hint', { opacity: 0, duration: 0.4 }, 0)
+    .fromTo('.flight-caption',
+        { opacity: 0, y: 30 },
+        { opacity: 1, y: 0, ease: 'power1.out', duration: 1.5 }, 7.6)
+    .to('.flight-caption', { opacity: 0, y: -20, ease: 'power1.in', duration: 1 }, 9.2);
 
     /* ===== Chapter 2: interlude lines rise in one by one ===== */
 
@@ -55,17 +108,14 @@
             });
     });
 
-    /* ===== Chapter 3: valley — pinned scene, captions swap =====
-       The scene pins for two extra viewports. The artwork slowly pans
-       while each caption fades in, holds, and hands off to the next —
-       the classic Apple pinned-caption pattern. */
+    /* ===== Chapter 3: valley — pinned scene, captions swap ===== */
 
     var captions = gsap.utils.toArray('[data-caption]');
     var valleyTl = gsap.timeline({
         scrollTrigger: {
             trigger: '.scene-valley',
             start: 'top top',
-            end: '+=200%',
+            end: '+=250%',
             scrub: 0.6,
             pin: true
         }
@@ -106,58 +156,4 @@
                 }
             });
     });
-
-    /* ===== Fireflies — ambient canvas particles over the hero ===== */
-
-    var canvas = document.querySelector('.fireflies');
-    if (!canvas) return;
-    var ctx = canvas.getContext('2d');
-    var flies = [];
-    var FLY_COUNT = 28;
-
-    function resize() {
-        canvas.width = canvas.offsetWidth;
-        canvas.height = canvas.offsetHeight;
-    }
-
-    function spawn() {
-        return {
-            x: Math.random() * canvas.width,
-            y: canvas.height * (0.35 + Math.random() * 0.65),
-            r: 1 + Math.random() * 2.2,
-            vx: (Math.random() - 0.5) * 0.25,
-            vy: -0.05 - Math.random() * 0.2,
-            phase: Math.random() * Math.PI * 2,
-            speed: 0.008 + Math.random() * 0.02
-        };
-    }
-
-    resize();
-    window.addEventListener('resize', resize);
-    for (var i = 0; i < FLY_COUNT; i++) flies.push(spawn());
-
-    function tick() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        for (var i = 0; i < flies.length; i++) {
-            var f = flies[i];
-            f.x += f.vx;
-            f.y += f.vy;
-            f.phase += f.speed;
-            if (f.y < -10 || f.x < -10 || f.x > canvas.width + 10) {
-                flies[i] = spawn();
-                flies[i].y = canvas.height + 5;
-                continue;
-            }
-            var glow = 0.25 + 0.75 * (0.5 + 0.5 * Math.sin(f.phase));
-            var grad = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 4);
-            grad.addColorStop(0, 'rgba(240, 205, 126, ' + (0.9 * glow) + ')');
-            grad.addColorStop(1, 'rgba(240, 205, 126, 0)');
-            ctx.fillStyle = grad;
-            ctx.beginPath();
-            ctx.arc(f.x, f.y, f.r * 4, 0, Math.PI * 2);
-            ctx.fill();
-        }
-        requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
 })();
