@@ -15,7 +15,7 @@
        The scene pins for five extra viewports while scroll position picks
        which frame of the pre-rendered dragon flight to draw. */
 
-    var FRAME_COUNT = 180;
+    var FRAME_COUNT = 181;
     var FRAME_PATH = function (i) {
         return 'assets/frames/f-' + String(i + 1).padStart(3, '0') + '.webp';
     };
