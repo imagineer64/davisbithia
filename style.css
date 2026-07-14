@@ -50,7 +50,8 @@ body {
 
 /* --- Chapter 1: the flight --- */
 
-.flight-canvas {
+.flight-canvas,
+.ride-canvas {
     position: absolute;
     inset: 0;
     width: 100%;
@@ -68,7 +69,8 @@ body {
     object-fit: cover;
 }
 
-.scene-flight::after {        /* gentle darkening for text legibility */
+.scene-flight::after,
+.scene-ride::after {          /* gentle darkening for text legibility */
     content: "";
     position: absolute;
     inset: 0;
