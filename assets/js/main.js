@@ -11,7 +11,8 @@
 
     gsap.registerPlugin(ScrollTrigger);
 
-    var RIDE_FRAME_COUNT = 181;   /* updated after scene-2 frame extraction */
+    var MOUNT_FRAME_COUNT = 121;  /* scene 1: approach + climb aboard (10s) */
+    var RIDE_FRAME_COUNT = 181;   /* scene 2: takeoff + valley flight (15s) */
 
     /* ===== Frame-scrub engine =====
        Pins a scene while scroll position picks which frame of a
@@ -81,14 +82,14 @@
         return tl;
     }
 
-    /* ===== Chapter 1: The Flight — approach over the bridge ===== */
+    /* ===== Chapter 1: The Mount — walk up and climb aboard ===== */
 
     frameScrub({
         scene: '.scene-flight',
         canvas: '.flight-canvas',
-        count: 181,
+        count: MOUNT_FRAME_COUNT,
         path: function (i) { return 'assets/frames/f-' + String(i + 1).padStart(3, '0') + '.webp'; },
-        pin: '500%'
+        pin: '400%'
     })
     .to('.hero-copy', { yPercent: 30, opacity: 0, ease: 'power1.in', duration: 1.6 }, 0.4)
     .to('.scroll-hint', { opacity: 0, duration: 0.4 }, 0)
