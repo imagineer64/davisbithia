@@ -1,0 +1,38 @@
+name: fetch-reel
+on:
+  push:
+    branches: [claude/instagram-reel-review-tvx2bk]
+    paths: ['.github/workflows/fetch-reel.yml']
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch reel assets
+        run: |
+          set -x
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0 Safari/537.36"
+          mkdir -p tmp-reel
+          curl -sL -A "$UA" "https://www.instagram.com/p/DZQU76-x-1G/media/?size=l" -o tmp-reel/thumb.jpg || true
+          curl -sL -A "$UA" "https://www.instagram.com/reel/DZQU76-x-1G/embed/captioned/" -o tmp-reel/embed.html || true
+          pip install -q yt-dlp || true
+          yt-dlp --no-warnings -o "tmp-reel/reel.%(ext)s" --write-info-json "https://www.instagram.com/reel/DZQU76-x-1G/" 2> tmp-reel/ytdlp-err.txt || true
+          VIDEO=$(ls tmp-reel/reel.mp4 tmp-reel/reel.webm 2>/dev/null | head -1 || true)
+          if [ -n "$VIDEO" ]; then
+            mkdir -p tmp-reel/frames
+            DUR=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$VIDEO")
+            echo "duration=$DUR" > tmp-reel/meta.txt
+            ffmpeg -v error -i "$VIDEO" -vf "fps=12/$DUR,scale=480:-2" -q:v 4 tmp-reel/frames/f-%02d.jpg || true
+          fi
+          file tmp-reel/* > tmp-reel/listing.txt || true
+          ls -la tmp-reel >> tmp-reel/listing.txt
+          find tmp-reel -size +40M -delete || true
+      - name: Commit results
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add -A tmp-reel
+          git commit -m "tmp: fetched reel assets for review [skip ci]" || echo "nothing to commit"
+          git push
