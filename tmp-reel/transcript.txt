@@ -1,0 +1,41 @@
+[   0.0-   8.4] You built all the right security features, RLS is on, office configured, HTTPS is everywhere.
+[   8.4-  11.1] But have you ever actually tried to hack your own app?
+[  11.1-  13.8] If not, someone else certainly will.
+[  13.8-  17.4] Here are the three things you can do right now to test your security.
+[  17.4-  18.7] Step 1.
+[  18.7-  21.6] Run O-Wasp zap on your app.
+[  21.6-  25.6] Zap is free, it's open source, it's one docker command.
+[  25.6-  29.9] It crawls your entire app and tests for the top 10 vulnerabilities.
+[  29.9-  33.9] Control injections, cross-site scripting, broken authentication.
+[  33.9-  38.0] The report is powerful and it tells you exactly where you're vulnerable.
+[  38.0-  40.1] Run it against your staging environment.
+[  40.1-  41.1] Why?
+[  41.1-  44.6] Because you can fix things before an attacker finds them in production.
+[  44.6-  45.6] That's a win.
+[  45.6-  47.0] Step 2.
+[  47.0-  49.5] Test your own API in Burp Suite.
+[  49.5-  54.9] You can intercept your own requests, change the user ID in the job payload, and then you
+[  54.9-  58.0] need to know, can you access another user's data?
+[  58.0-  61.0] Change the org underscore ID in the request body.
+[  61.0-  63.5] Can you read another tenets records?
+[  63.5-  65.1] Modify the role claim.
+[  65.1-  67.4] Can you access admin endpoints?
+[  67.4-  73.2] If any of these actually work, your authorization logic has holes in it like Swiss cheese.
+[  73.2-  74.9] RLS is not enough.
+[  74.9-  78.4] Your API passes unchecked parameters to the database.
+[  78.4-  79.8] That's not a win.
+[  79.8-  81.1] Step 3.
+[  81.1-  83.5] Automate security scanning in CI.
+[  83.5-  88.5] Worker GitHub's built-in code scanning, add it to your GitHub actions workflow.
+[  88.5-  93.0] Every push gets scanned from known vulnerabilities and dependencies.
+[  93.0-  98.4] Every PR gets checked for hard-coded secrets with GitGuardian or TruffleHog.
+[  98.4- 100.5] Security is not a one-time audit, folks.
+[ 100.5- 104.8] It's a continuous process of running on every single commit.
+[ 104.8- 107.1] Scan, intercept, and automate.
+[ 107.1- 110.5] You're not hiring a pen testing firm for $50,000.
+[ 110.5- 113.7] You're running the same tools they use for free.
+[ 113.7- 114.7] The difference?
+[ 114.7- 116.8] You got to run them before the breach.
+[ 116.8- 119.8] So when did you last try to hack your own app?
+[ 119.8- 122.1] Huh, it's been too long if you haven't tried.
+[ 122.1- 122.4] Try it now.
