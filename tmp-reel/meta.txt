@@ -1,0 +1,3 @@
+duration=122.811995
+stream,vp9,1080,1920
+stream,aac
